@@ -1,3 +1,4 @@
+import { DocumentType } from "@typegoose/typegoose";
 import UserModel, { User } from "../models/user.model";
 
 export function createUser(input: Partial<User>) {
