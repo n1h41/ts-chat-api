@@ -9,7 +9,7 @@ export async function registerUserHandler(req: Request<object, object, CreateUse
   const body = req.body;
   try {
     const user = await createUser(body)
-    sendMail({
+    await sendMail({
       from: 'nihalninu25@gmail.com',
       to: user.email,
       subject: "Please verify your account",
@@ -21,8 +21,7 @@ export async function registerUserHandler(req: Request<object, object, CreateUse
       return res.status(401).send("This user is already registered")
     }
     log.error(e)
-    return res.status(401).send(e)
-  }
+    return res.status(401).send(e) }
 }
 
 export async function verifyUserHandler(req: Request<VerifyUserInput>, res: Response) {
@@ -39,7 +38,7 @@ export async function verifyUserHandler(req: Request<VerifyUserInput>, res: Resp
     await user.save()
     return res.send("User verified successfully")
   }
-  return res.send("Invalid link")
+  return res.status(401).send("Invalid link")
 }
 
 export async function forgotPasswordHandler(req: Request<object, object, ForgotPasswordInput>, res: Response) {

@@ -1,4 +1,3 @@
-import { DocumentType } from "@typegoose/typegoose";
 import UserModel, { User } from "../models/user.model";
 
 export function createUser(input: Partial<User>) {
@@ -6,9 +5,9 @@ export function createUser(input: Partial<User>) {
 }
 
 export function findUserById(id: string) {
-  return UserModel.findById(id)
+  return UserModel.findById(id).exec()
 }
 
 export function findUserByEmail(email: string) {
-  return UserModel.findOne({email})
+  return UserModel.findOne({email}).exec()
 }
