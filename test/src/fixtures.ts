@@ -15,5 +15,12 @@ export const userPayload = new UserModel({
   id: _id,
   email: "nihalninu25@gmail.com",
   firstName: "Nihal",
-  lastName: "Abdulla"
+  lastName: "Abdulla",
+  password: "123",
+  verified: true
 })
+
+export const loginInput = {
+  email: "nihalninu25@gmail.com",
+  password: "123"
+}

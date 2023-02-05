@@ -18,13 +18,13 @@ export async function createSessionHandler(req: Request<object, object, CreateSe
   const user: DocumentType<User> | null = await findUserByEmail(email)
 
   if (!user) {
-    return res.status(401).send(message)
+    return res.status(402).send(message)
   }
   if (!user.verified) {
-    return res.send("Account is not verified")
+    return res.status(401).send("Account is not verified")
   }
   if (!user.validatePassword(password)) {
-    return res.status(401).send(message)
+    return res.status(404).send(message)
   }
   
   const accessToken = signAccessToken(user)

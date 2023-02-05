@@ -47,7 +47,7 @@ export async function forgotPasswordHandler(req: Request<object, object, ForgotP
   const user =  await findUserByEmail(email)
   
   if (!user) {
-    return res.send(message)
+    return res.status(401).send(message)
   }
 
   if (!user.verified) {
