@@ -29,7 +29,7 @@ export async function createSessionHandler(req: Request<object, object, CreateSe
   
   const accessToken = signAccessToken(user)
 
-  const refreshToken = signRefreshToken(user._id)
+  const refreshToken = await signRefreshToken(user._id)
 
   return res.send({accessToken, refreshToken})
 }
@@ -55,5 +55,5 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
 
   const accessToken = signAccessToken(user)
 
-  return res.send(accessToken)
+  return res.send({accessToken})
 }

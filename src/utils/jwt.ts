@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import config from "config";
 
 export function signJwt(
-  object: Object,
+  object: object,
   keyName: "accessTokenPrivateKey" | "refreshTokenPrivateKey",
   options?: jwt.SignOptions | undefined
 ) {

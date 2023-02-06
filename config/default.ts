@@ -2,7 +2,6 @@ export default {
   port: 3000,
   logLevel: "info",
   dbUrl: "mongodb://localhost:2717/chat-db",
-  accessTokenPrivateKey: ``,
   smtp: {
     user: "ptpr6cqcqzktjgbi@ethereal.email",
     pass: "3tMWvH2caHE4fGXwjc",
