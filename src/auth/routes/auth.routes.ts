@@ -7,6 +7,8 @@ const authRoute = express.Router()
 
 authRoute.get('/healthcheck', healthcheckHandler)
 
-authRoute.post('/auth/createsession', validateResource(createSessionSchema), createSessionHandler)
+authRoute.post('/auth/sessions/create', validateResource(createSessionSchema), createSessionHandler)
+
+authRoute.post('/auth/sessions/refresh')
 
 export default authRoute
