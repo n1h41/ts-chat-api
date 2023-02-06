@@ -7,8 +7,8 @@ import { User } from "../../../../src/auth/models/user.model"
 
 const app = createServer()
 
-describe.only("Authentication", () => {
-  describe.skip("Create a session", () => {
+describe.skip("Authentication", () => {
+  describe("Create a session", () => {
     let findUserByEmailMock
     let validatePasswordMock
     beforeEach(() => {

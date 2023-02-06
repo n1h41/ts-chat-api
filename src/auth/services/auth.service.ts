@@ -17,7 +17,7 @@ export function createSession(userId: string) {
 
 export async function signRefreshToken(userId: string) {
   const session: DocumentType<Session> = await createSession(userId)
-  const refreshToken: string = signJwt({session: session._id}, "refreshTokenPrivateKey", {expiresIn: "1y"})
+  const refreshToken: string | undefined = signJwt({session: session._id}, "refreshTokenPrivateKey", {expiresIn: "1y"})
   return refreshToken
 }
 
