@@ -3,14 +3,14 @@ import { forgotPasswordHandler, registerUserHandler, resetPasswordHandler, verif
 import { createUserSchema, forgotPasswordSchema, resetPasswordSchema, verifyUserSchema } from "../schema/user.schema"
 import validateResource from "../middlewares/validateResource"
 
-const userRouter = express.Router()
+const user = express.Router()
 
-userRouter.post('/users/register', validateResource(createUserSchema), registerUserHandler)
+user.post('/users/register', validateResource(createUserSchema), registerUserHandler)
 
-userRouter.post('/users/verify/:id/:verificationCode', validateResource(verifyUserSchema), verifyUserHandler)
+user.post('/users/verify/:id/:verificationCode', validateResource(verifyUserSchema), verifyUserHandler)
 
-userRouter.post('/users/forgotpassword', validateResource(forgotPasswordSchema), forgotPasswordHandler)
+user.post('/users/forgotpassword', validateResource(forgotPasswordSchema), forgotPasswordHandler)
 
-userRouter.post('/users/resetpassword/:id/:passwordResetCode', validateResource(resetPasswordSchema), resetPasswordHandler)
+user.post('/users/resetpassword/:id/:passwordResetCode', validateResource(resetPasswordSchema), resetPasswordHandler)
 
-export default userRouter
+export default user

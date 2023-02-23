@@ -8,10 +8,6 @@ import { CreateSessionInput } from "../schema/auth.schema";
 import { findSessionById, signAccessToken, signRefreshToken } from "../services/auth.service";
 import { findUserByEmail, findUserById } from "../services/user.service";
 
-export async function healthcheckHandler(_req: Request, res: Response) {
-  return res.sendStatus(201)
-}
-
 export async function createSessionHandler(req: Request<object, object, CreateSessionInput>, res: Response) {
   const message = "Invalid email or password"
   const {email, password} = req.body
