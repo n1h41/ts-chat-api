@@ -3,8 +3,8 @@ export default {
   logLevel: "info",
   dbUrl: "mongodb://localhost:2717/chat-db",
   smtp: {
-    user: "ptpr6cqcqzktjgbi@ethereal.email",
-    pass: "3tMWvH2caHE4fGXwjc",
+    user: "ux7zudckhfydbvqp@ethereal.email",
+    pass: "ENQk83QJCBtaU29hfr",
     host: "smtp.ethereal.email",
     secure: false,
     port: 587

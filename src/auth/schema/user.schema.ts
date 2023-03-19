@@ -19,7 +19,7 @@ export const createUserSchema = object({
       required_error: "Password confirmation is required"
     }),
   }).refine((data) => data.password === data.passwordConfirmation, {
-    message: "Password does not match",
+    message: "Password and confirmation password does not match",
     path: ["passwordConfirmation"]
   })
 })

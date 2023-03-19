@@ -7,7 +7,7 @@ const user = express.Router()
 
 user.post('/users/register', validateResource(createUserSchema), registerUserHandler)
 
-user.post('/users/verify/:id/:verificationCode', validateResource(verifyUserSchema), verifyUserHandler)
+user.get('/users/verify/:id/:verificationCode', validateResource(verifyUserSchema), verifyUserHandler)
 
 user.post('/users/forgotpassword', validateResource(forgotPasswordSchema), forgotPasswordHandler)
 

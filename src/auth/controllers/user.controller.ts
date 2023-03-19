@@ -12,8 +12,11 @@ export async function registerUserHandler(req: Request<object, object, CreateUse
     await sendMail({
       from: 'nihalninu25@gmail.com',
       to: user.email,
-      subject: "Please verify your account",
-      text: `verification code ${user.verificationCode}, Id: ${user._id}`
+      subject: "Verify you'r account",
+      html: `
+        <h1>Email confirmation</h1>
+        <p>Verify you'r account by clicking <a href=http://localhost:3000/users/verify/${user._id}/${user.verificationCode}>here</a></p>
+      `,
     }) 
     return res.send("User created successfully")
   } catch(e: any) {

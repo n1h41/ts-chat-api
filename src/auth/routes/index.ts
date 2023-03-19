@@ -5,7 +5,7 @@ import auth from './auth.routes'
 const router = express.Router()
 
 router.get('/healthcheck', (_, res) => {
-    res.send(201)
+  res.sendStatus(201)
 })
 
 router.use(user)
