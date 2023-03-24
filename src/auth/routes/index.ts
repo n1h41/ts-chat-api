@@ -2,13 +2,13 @@ import express from 'express'
 import user from './user.routes'
 import auth from './auth.routes'
 
-const router = express.Router()
+const authRoutes = express.Router()
 
-router.get('/healthcheck', (_, res) => {
+authRoutes.get('/healthcheck', (_, res) => {
   res.sendStatus(201)
 })
 
-router.use(user)
-router.use(auth)
+authRoutes.use(user)
+authRoutes.use(auth)
 
-export default router
+export default authRoutes
