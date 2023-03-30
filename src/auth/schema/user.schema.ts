@@ -1,4 +1,3 @@
-import { verify } from "jsonwebtoken"
 import { object, string, TypeOf } from "zod"
 
 export const createUserSchema = object({

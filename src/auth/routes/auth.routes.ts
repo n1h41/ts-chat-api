@@ -3,7 +3,7 @@ import { createSessionHandler, refreshAccessTokenHandler } from '../controllers/
 import validateResource from '../middlewares/validateResource'
 import { createSessionSchema } from '../schema/auth.schema'
 
-const auth = express.Router()
+const auth = express.Router();
 
 auth.post('/auth/sessions/create', validateResource(createSessionSchema), createSessionHandler)
 
