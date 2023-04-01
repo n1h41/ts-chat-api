@@ -3,32 +3,33 @@ import WebSocket from 'ws'
 import crypto from 'crypto'
 import { findUserById } from '../auth/services/user.service';
 
+interface ExtWebSocket extends WebSocket {
+  userId: string
+}
+
 interface SClient {
   userId: string;
   c: WebSocket;
 }
 
-export let webSocketUsers = new Map<string, SClient>();
+export let webSocketUsers = new Map<string, ExtWebSocket>();
 
 class Sockets {
 
-  public async onConnection(conn: WebSocket, req: IncomingMessage) {
+  public async onConnection(client: ExtWebSocket, req: IncomingMessage) {
     if (!req.url!.includes('/?id=')) {
-      conn.close()
+      client.close()
       return null
     }
-    const client: SClient = {
-      userId: req.url!.replace('/?id=', ''),
-      c: conn
-    }
+    client.userId = req.url!.replace('/?id=', '')
     const user = await findUserById(client.userId)
     if (!user) {
-      client.c.emit('Error: User for the given user id not found')
-      client.c.close()
+      client.emit('Error: User for the given user id not found')
+      client.close()
       return null
     }
     webSocketUsers.set(client.userId, client)
-    client.c.on("close", () => {
+    client.on("close", () => {
       webSocketUsers.delete(client.userId);
     })
   }
