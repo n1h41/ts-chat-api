@@ -13,4 +13,6 @@ chat.post("/join", validateResource(chatSchema.joinChatRoomSchema), chatControll
 
 chat.post("/leave", validateResource(chatSchema.leaveChatRoomSchema), chatController.leaveChatRoom)
 
+chat.post("/:roomId", validateResource(chatSchema.sendMessageToRoomSchema), chatController.sendMessageToRoom)
+
 export default chat;

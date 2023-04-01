@@ -1,17 +1,6 @@
-import ChatClientModel, { ChatClient } from "../models/chatClient.model";
+import { webSocketUsers } from "../../utils/webSocket";
 import ChatRoomModel, { ChatRoom } from "../models/chatRoom.model";
-
-export function createChatClient(input: ChatClient) {
-    return ChatClientModel.create(input)
-}
-
-export function findChatClientByUserId(userId: string) {
-    return ChatClientModel.findOne({ user: userId }).exec()
-}
-
-export function updateChatClient(id: string, socketId: string) {
-    return ChatClientModel.updateOne({ _id: id }, { websocketId: socketId }).exec()
-}
+import { ChatMessage } from "../types/chatMessage.type";
 
 export function getAllChatRoomsByUserId(userId: string) {
     return ChatRoomModel.find({ usersId: { $contains: userId } }).exec()
@@ -33,6 +22,24 @@ export function deleteChatRoomById(roomId: string) {
     return ChatRoomModel.deleteOne({ roomId }).exec()
 }
 
-export function getChatRoomById(roomId: string) {
+export function getChatRoomByRoomId(roomId: string) {
     return ChatRoomModel.findOne({ roomId }).exec()
+}
+
+export function isUserOnline(userId: string): boolean {
+    // * Check whether the user is in the websocket chat client collection
+    if (!webSocketUsers.has(userId)) {
+        return false
+    }
+    // * Check whether the user is connected to the websocket server
+    const client = webSocketUsers.get(userId)!.c
+    if (client.readyState !== client.OPEN) {
+        return false
+    }
+    return true
+}
+
+export function sendMessage(userId: string, message: ChatMessage) {
+    const client = webSocketUsers.get(userId)!.c
+    client.emit(JSON.stringify(message))
 }

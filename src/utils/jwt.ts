@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import config from "config";
+import log from "./logger";
 
 export function signJwt(
   object: object,
@@ -29,6 +30,7 @@ export function verifyJwt<T>(
     const decoded = jwt.verify(token, publicKey) as T;
     return decoded;
   } catch (e) {
+    log.error(e);
     return null;
   }
 }
