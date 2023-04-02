@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import WebSocketWithUserId from "../interfaces/webSocketWithUserId.interface";
 import { WebSocket } from "ws";
 
@@ -28,38 +27,46 @@ export class ChatController {
         switch (msg.type) {
             case "join":
                 // TODO: Join a chat room
+                this.joinChatRoom()
                 break
             case "leave":
                 // TODO: Leave a chat room
+                this.leaveChatRoom()
                 break
             case "create":
                 // TODO: Create a chat room
+                this.createChatRoom()
                 break
             case "message":
                 // TODO: Send a message to a chat room
+                this.sendMessageToRoom()
+                break
+            case "getChatRooms":
+                // TODO: Get all chat rooms by user ID
+                this.getAllChatRoomsByUserId()
                 break
             default:
                 break;
         }
     }
 
-    public createChatRoom() {
+    private createChatRoom() {
         // TODO
     }
 
-    public joinChatRoom() {
+    private joinChatRoom() {
         // TODO
     }
 
-    public getAllChatRoomsByUserId() {
+    private getAllChatRoomsByUserId() {
         // TODO
     }
 
-    public leaveChatRoom() {
+    private leaveChatRoom() {
         // TODO
     }
 
-    public sendMessageToRoom() {
+    private sendMessageToRoom() {
         // TODO
     }
 }
