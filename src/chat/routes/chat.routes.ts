@@ -1,9 +1,11 @@
 import express from "express";
-import { chatController } from "../controllers/chat.controller";
 import validateResource from "../../auth/middlewares/validateResource";
 import { chatSchema } from "../schema/chat.schema";
+import { ChatController } from "../controllers/chat.controller";
 
-const chat = express.Router();
+const chat = express.Router()
+
+const chatController = ChatController.Instance;
 
 chat.get("/all", chatController.getAllChatRoomsByUserId);
 

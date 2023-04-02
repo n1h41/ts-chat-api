@@ -8,7 +8,8 @@ import config from 'config';
 import { WebSocketServer } from 'ws';
 import connectToDatabase from './utils/connectToDb';
 import createServer from './utils/server';
-import Sockets from "./utils/webSocket";
+import { WebSocketService } from "./chat/services/webSocket.service";
+import { ChatController } from "./chat/controllers/chat.controller";
 
 const app = createServer()
 
@@ -18,7 +19,7 @@ const port = config.get('port');
 
 export const wss: WebSocketServer = new WebSocketServer({ server })
 
-wss.on('connection', Sockets.onConnection);
+new WebSocketService(ChatController.Instance, wss)
 
 server.listen(port)
 

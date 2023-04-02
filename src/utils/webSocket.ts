@@ -1,42 +1,57 @@
-import { IncomingMessage } from 'http';
-import WebSocket from 'ws'
-import crypto from 'crypto'
-import { findUserById } from '../auth/services/user.service';
-import { verifyJwt } from './jwt';
-import { User } from '../auth/models/user.model';
-import { DocumentType } from '@typegoose/typegoose';
+import WebSocket from 'ws';
+import jwt from 'jsonwebtoken';
 
-interface ExtWebSocket extends WebSocket {
-  userId: string
+interface WebSocketWithUserId extends WebSocket {
+  userId?: string;
 }
 
-interface SClient {
-  userId: string;
-  c: WebSocket;
-}
+export class WebSocketService {
+  constructor(
+    // private chatController: ChatController,
+    private wss: WebSocket.Server,
+    private secretKey: string
+  ) {
+    this.init();
+  }
 
-export let webSocketUsers = new Map<string, ExtWebSocket>();
+  private init() {
+    this.wss.on('connection', (ws: WebSocketWithUserId, req) => {
+      // Extract JWT from headers
+      const token = req.headers.authorization?.split(' ')[1];
 
-class Sockets {
+      if (!token) {
+        // If no token is provided, reject the connection
+        ws.close();
+        return;
+      }
 
-  public async onConnection(client: ExtWebSocket, req: IncomingMessage) {
-    if (!req.url!.includes('/?accessToken=')) {
-      client.close()
-      return null
-    }
-    const accessToken = req.url!.replace('/?accessToken=', '')
-    const user = verifyJwt<DocumentType<User>>(accessToken, "accessTokenPublicKey")
-    if (!user) {
-      client.emit('Error: User for the given user id not found')
-      client.close()
-      return null
-    }
-    client.userId = user._id
-    webSocketUsers.set(client.userId, client)
-    client.on("close", () => {
-      webSocketUsers.delete(client.userId);
-    })
+      try {
+        // Verify the JWT
+        const decoded = jwt.verify(token, this.secretKey);
+
+        // Extract the user ID from the decoded JWT
+        const userId = (decoded as { userId: string }).userId;
+
+        // Associate the WebSocket connection with the authenticated user
+        ws.userId = userId;
+
+        // Register the WebSocket connection with the chat controller
+        // this.chatController.addWebSocketConnection(ws);
+
+        // Handle incoming messages from the client
+        ws.on('message', (message: string) => {
+          // this.chatController.handleMessage(ws, message);
+        });
+
+        // Remove the WebSocket connection when it's closed
+        ws.on('close', () => {
+          // this.chatController.removeWebSocketConnection(ws);
+        });
+      } catch (error) {
+        // If the JWT is invalid, reject the connection
+        ws.close();
+      }
+    });
   }
 }
 
-export default new Sockets()

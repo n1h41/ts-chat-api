@@ -1,4 +1,3 @@
-import { webSocketUsers } from "../../utils/webSocket";
 import ChatRoomModel, { ChatRoom } from "../models/chatRoom.model";
 import { ChatMessage } from "../types/chatMessage.type";
 
@@ -24,22 +23,4 @@ export function deleteChatRoomById(roomId: string) {
 
 export function getChatRoomByRoomId(roomId: string) {
     return ChatRoomModel.findOne({ roomId }).exec()
-}
-
-export function isUserOnline(userId: string): boolean {
-    // * Check whether the user is in the websocket chat client collection
-    if (!webSocketUsers.has(userId)) {
-        return false
-    }
-    // * Check whether the user is connected to the websocket server
-    const client = webSocketUsers.get(userId)!
-    if (client.readyState !== client.OPEN) {
-        return false
-    }
-    return true
-}
-
-export function sendMessage(userId: string, message: ChatMessage) {
-    const client = webSocketUsers.get(userId)!
-    client.emit(JSON.stringify(message))
 }
