@@ -1,4 +1,4 @@
-import { DocumentType, getModelForClass, index, modelOptions, pre, prop, Severity } from "@typegoose/typegoose";
+import { DocumentType, getModelForClass, index, modelOptions, mongoose, pre, prop, Severity } from "@typegoose/typegoose";
 import argon2 from "argon2"
 import { nanoid } from "nanoid";
 
@@ -24,32 +24,33 @@ export const privateFields = [
   },
   options: {
     allowMixed: Severity.ALLOW
-  } 
+  }
 })
 @index({
   email: 1
 })
 export class User {
   @prop({ required: true, unique: true, lowercase: true })
-    email: string
+  email: string
 
   @prop({ required: true })
-    firstName: string
-  
-  @prop({ required: true })
-    lastName: string
+  firstName: string
 
   @prop({ required: true })
-    password: string
+  lastName: string
+
+  @prop({ required: true })
+  password: string
 
   @prop({ required: true, default: nanoid() })
-    verificationCode: string
-  
-  @prop({})
-    passwordResetCode: string | null
+  verificationCode: string
 
-  @prop({default: false})
-    verified: boolean
+  @prop({})
+  passwordResetCode: string | null
+
+  @prop({ default: false })
+  verified: boolean
+
 
   async validatePassword(this: DocumentType<User>, candidatePassword: string): Promise<boolean> {
     try {
@@ -57,10 +58,10 @@ export class User {
     } catch (e) {
       console.log("Could not authenticate password")
       return false
-    } 
+    }
   }
 }
 
-const UserModel =  getModelForClass(User)
+const UserModel = getModelForClass(User)
 
 export default UserModel
