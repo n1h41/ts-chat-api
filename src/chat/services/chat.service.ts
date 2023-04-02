@@ -32,7 +32,7 @@ export function isUserOnline(userId: string): boolean {
         return false
     }
     // * Check whether the user is connected to the websocket server
-    const client = webSocketUsers.get(userId)!.c
+    const client = webSocketUsers.get(userId)!
     if (client.readyState !== client.OPEN) {
         return false
     }
@@ -40,6 +40,6 @@ export function isUserOnline(userId: string): boolean {
 }
 
 export function sendMessage(userId: string, message: ChatMessage) {
-    const client = webSocketUsers.get(userId)!.c
+    const client = webSocketUsers.get(userId)!
     client.emit(JSON.stringify(message))
 }

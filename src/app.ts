@@ -8,7 +8,6 @@ import config from 'config';
 import { WebSocketServer } from 'ws';
 import connectToDatabase from './utils/connectToDb';
 import createServer from './utils/server';
-import WebSockets from './utils/webSocket'
 import Sockets from "./utils/webSocket";
 
 const app = createServer()
@@ -23,10 +22,9 @@ wss.on('connection', Sockets.onConnection);
 
 server.listen(port)
 
-server.on("listening", () => {
+server.on("listening", async () => {
   log.info('App launched at http://localhost:3000')
+  // await connectToDatabase();
 })
-//server.listen(port, async () => {
-//  log.info('App launched at http://localhost:3000');
-//  await connectToDatabase();
-//});
+
+export { server }

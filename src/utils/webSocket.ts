@@ -31,7 +31,7 @@ class Sockets {
       client.close()
       return null
     }
-    client.userId = user.id
+    client.userId = user._id
     webSocketUsers.set(client.userId, client)
     client.on("close", () => {
       webSocketUsers.delete(client.userId);

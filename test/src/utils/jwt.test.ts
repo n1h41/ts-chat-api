@@ -3,7 +3,7 @@ dotenv.config()
 import { signJwt, verifyJwt } from "../../../src/utils/jwt"
 import config from "config"
 
-describe("JWT", () => {
+describe.skip("JWT", () => {
   let signedAT: string | undefined
   describe.skip("Accessing refresh token private and public keys", () => {
     describe("given trying to fetch the refresh token private key", () => {

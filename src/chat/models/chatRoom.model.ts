@@ -1,14 +1,19 @@
-import { getModelForClass, prop } from '@typegoose/typegoose'
+import { Severity, getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
 
+@modelOptions({
+  options: {
+    allowMixed: Severity.ALLOW
+  }
+})
 export class ChatRoom {
   @prop({ required: true })
-    chatInitiator: string
+  chatInitiator: string
 
   @prop({ required: true, unique: true })
-    roomId: string 
+  roomId: string
 
-  @prop({default: [], required: true})
-    usersId: string[]
+  @prop({ default: [], required: true })
+  usersId: string[]
 }
 
 const ChatRoomModel = getModelForClass(ChatRoom)
