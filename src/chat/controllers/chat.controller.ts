@@ -16,10 +16,12 @@ export class ChatController {
 
     public addWebSocketConnection(ws: WebSocketWithUserId) {
         this.webSocketConnections.set(ws.userId!, ws);
+        console.log(this.webSocketConnections)
     }
 
     public removeWebSocketConnection(ws: WebSocketWithUserId) {
         this.webSocketConnections.delete(ws.userId!);
+        console.log(this.webSocketConnections)
     }
 
     public handleMessage(ws: WebSocket, msg: any) {

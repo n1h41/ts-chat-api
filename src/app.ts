@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 const port = config.get('port');
 
-export const wss: WebSocketServer = new WebSocketServer({ server })
+const wss: WebSocketServer = new WebSocketServer({ server })
 
 new WebSocketService(ChatController.Instance, wss)
 
@@ -25,7 +25,7 @@ server.listen(port)
 
 server.on("listening", async () => {
   log.info('App launched at http://localhost:3000')
-  // await connectToDatabase();
+  await connectToDatabase();
 })
 
 export { server }
