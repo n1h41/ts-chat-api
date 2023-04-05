@@ -9,12 +9,12 @@ const chatController = ChatController.Instance;
 
 chat.get("/all", chatController.getAllChatRoomsByUserId);
 
-chat.post("/create", chatController.createChatRoom)
+/* chat.post("/create", chatController.createChatRoom)
 
 chat.post("/join", validateResource(chatSchema.joinChatRoomSchema), chatController.joinChatRoom)
 
 chat.post("/leave", validateResource(chatSchema.leaveChatRoomSchema), chatController.leaveChatRoom)
 
-chat.post("/:roomId", validateResource(chatSchema.sendMessageToRoomSchema), chatController.sendMessageToRoom)
+chat.post("/:roomId", validateResource(chatSchema.sendMessageToRoomSchema), chatController.sendMessageToRoom) */
 
 export default chat;
