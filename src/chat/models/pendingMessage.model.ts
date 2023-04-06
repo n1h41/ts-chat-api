@@ -8,7 +8,7 @@ export class PendingMessage {
     @prop({ required: true })
     message: ChatMessage
 
-    @prop({ required: true, default: false })
+    @prop({ default: false })
     isDelivered: boolean
 }
 

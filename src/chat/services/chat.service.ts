@@ -1,4 +1,5 @@
 import ChatRoomModel, { ChatRoom } from "../models/chatRoom.model";
+import PendingMessageModel, { PendingMessage } from "../models/pendingMessage.model";
 
 export class ChatService {
     public getAllChatRoomsByUserId(userId: string) {
@@ -10,7 +11,7 @@ export class ChatService {
     }
 
     public joinChatRoom(roomId: string, userId: string) {
-        return ChatRoomModel.updateOne({ roomId }, { $push: { usersId: userId } }).exec()
+        return ChatRoomModel.updateOne({ roomId }, { $addToSet: { usersId: userId } }).exec()
     }
 
     public leaveChatRoomById(roomId: string, userId: string) {
@@ -23,5 +24,9 @@ export class ChatService {
 
     public getChatRoomByRoomId(roomId: string) {
         return ChatRoomModel.findOne({ roomId }).exec()
+    }
+
+    public createPendingMessage(input: PendingMessage) {
+        return PendingMessageModel.create(input)
     }
 }

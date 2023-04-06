@@ -7,6 +7,10 @@ import { SendMessageMsg } from "../types/ws.sendMessageMsg.type";
 import { ChatService } from "../services/chat.service";
 import { ChatRoom } from "../models/chatRoom.model";
 import { DocumentType } from "@typegoose/typegoose";
+import { PendingMessage } from "../models/pendingMessage.model";
+import log from "../../utils/logger";
+import { MongoServerError } from "mongodb";
+import WebSocket from "ws";
 
 export class ChatController {
     private webSocketConnections: Map<String, WebSocketWithUserId> = new Map<String, WebSocketWithUserId>();
@@ -34,61 +38,85 @@ export class ChatController {
     public handleMessage(ws: WebSocketWithUserId, msg: Msg) {
         switch (msg.type) {
             case "join":
-                this.joinChatRoom(ws, msg.message as JoinGroupMsg)
+                this.joinChatRoom(ws, msg.payload as JoinGroupMsg)
                 break
             case "leave":
-                this.leaveChatRoom(ws, msg.message as LeaveGroupMsg)
+                this.leaveChatRoom(ws, msg.payload as LeaveGroupMsg)
                 break
             case "create":
-                this.createChatRoom(ws, msg.message as CreateGroupMsg)
+                this.createChatRoom(ws, msg.payload as CreateGroupMsg)
                 break
             case "message":
-                this.sendMessageToRoom(ws, msg.message as SendMessageMsg)
+                this.sendMessageToRoom(ws, msg.payload as SendMessageMsg)
                 break
             default:
                 break;
         }
     }
 
-    public createChatRoom(ws: WebSocketWithUserId, msg: CreateGroupMsg) {
+    public async createChatRoom(ws: WebSocketWithUserId, msg: CreateGroupMsg) {
         const input: ChatRoom = {
             chatInitiator: ws.userId,
-            roomId: crypto.randomUUID(),
+            roomId: msg.roomId ?? crypto.randomUUID(),
             usersId: [ws.userId]
         }
-        this.chatService.createChatRoom(input);
+        try {
+            await this.chatService.createChatRoom(input);
+            ws.send("Chat room created")
+            return
+        } catch (error) {
+            const err = error as MongoServerError;
+            log.error(err.message)
+            if (err.code === 11000) {
+                ws.send("Chat room already exists")
+                return
+            }
+            ws.send(`ErrorCode: ${err.code}`)
+        }
     }
 
     public joinChatRoom(ws: WebSocketWithUserId, msg: JoinGroupMsg) {
         this.chatService.joinChatRoom(msg.roomId, ws.userId);
+        ws.send("Joined chat room")
     }
 
     public getAllChatRoomsByUserId(ws: WebSocketWithUserId) {
         // TODO
     }
 
-    public leaveChatRoom(ws: WebSocketWithUserId, msg: LeaveGroupMsg) {
+    public async leaveChatRoom(ws: WebSocketWithUserId, msg: LeaveGroupMsg) {
+        const chatRoom = await this.chatService.getChatRoomByRoomId(msg.roomId);
+        if (!chatRoom) {
+            ws.send("Chat room not found");
+            return
+        }
+        if (chatRoom.chatInitiator === ws.userId) {
+            this.chatService.deleteChatRoomById(msg.roomId);
+            return ws.send("Chat room deleted");
+        }
         this.chatService.leaveChatRoomById(msg.roomId, ws.userId);
+        ws.send("Left chat room")
     }
 
     public async sendMessageToRoom(ws: WebSocketWithUserId, msg: SendMessageMsg) {
         const chatRoom: DocumentType<ChatRoom> | null = await this.chatService.getChatRoomByRoomId(msg.roomId);
         if (!chatRoom) {
-            ws.emit("Chat room not found")
+            ws.send("Chat room not found")
             return
         }
         const usersList: string[] = chatRoom.usersId;
         usersList.forEach(userId => {
-            if (this.isUserOnline(userId)) {
+            if (this.isUserOnline(userId) && ws.userId !== userId) {
                 this.sendMessageToUser(msg, userId)
             }
-            // TODO: logic to send message to offline users
+            this.sendMessageToOfflineUser(msg, userId)
         })
+        ws.send("Message sent")
     }
 
     private isUserOnline(userId: string): boolean {
         const ws = this.webSocketConnections.get(userId);
-        if (!ws || ws.readyState !== WebSocket.OPEN) {
+        if (ws === undefined || ws.readyState !== WebSocket.OPEN) {
             return false;
         }
         return true;
@@ -96,6 +124,20 @@ export class ChatController {
 
     private sendMessageToUser(msg: SendMessageMsg, userId: string) {
         const ws = this.webSocketConnections.get(userId)!;
-        ws.emit(msg.data)
+        ws.send(msg.data)
+    }
+
+    private async sendMessageToOfflineUser(msg: SendMessageMsg, userId: string) {
+        const input: PendingMessage = {
+            userId,
+            message: {
+                createdTime: Date.now().toString(),
+                data: msg.data,
+                roomId: msg.roomId,
+                senderId: userId
+            },
+            isDelivered: false
+        }
+        const pendingMessage = await this.chatService.createPendingMessage(input);
     }
 }

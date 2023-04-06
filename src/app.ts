@@ -25,7 +25,7 @@ server.listen(port)
 
 server.on("listening", async () => {
   log.info('App launched at http://localhost:3000')
-  // await connectToDatabase();
+  await connectToDatabase();
 })
 
 export { server }

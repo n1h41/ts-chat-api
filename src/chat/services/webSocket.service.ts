@@ -20,11 +20,13 @@ export class WebSocketService {
         this.wss.on('connection', (ws: WebSocketWithUserId, req: IncomingMessage) => {
             const accessToken = req.headers.authorization?.split(' ')[1];
             if (!accessToken) {
+                ws.emit('error: No access token')
                 ws.close();
                 return;
             }
             const user = verifyJwt<DocumentType<User>>(accessToken, "accessTokenPublicKey")
             if (!user) {
+                ws.emit('error: Invalid access token')
                 ws.close();
                 return;
             }

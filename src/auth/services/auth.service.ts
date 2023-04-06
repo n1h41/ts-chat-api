@@ -6,7 +6,7 @@ import { Session, SessionModel } from "../models/session.model";
 
 export function signAccessToken(user: DocumentType<User>) {
   const payload = omit(user.toJSON(), privateFields)
-  const accessToken = signJwt(payload, "accessTokenPrivateKey", {expiresIn: "15m"})
+  const accessToken = signJwt(payload, "accessTokenPrivateKey", {expiresIn: "60m"})
 
   return accessToken
 }
