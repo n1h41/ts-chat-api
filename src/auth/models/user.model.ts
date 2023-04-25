@@ -1,4 +1,4 @@
-import { DocumentType, getModelForClass, index, modelOptions, mongoose, pre, prop, Severity } from "@typegoose/typegoose";
+import { DocumentType, getModelForClass, index, modelOptions, pre, prop, Severity } from "@typegoose/typegoose";
 import argon2 from "argon2"
 import { nanoid } from "nanoid";
 
