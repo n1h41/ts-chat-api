@@ -14,13 +14,13 @@ export async function createSessionHandler(req: Request<object, object, CreateSe
   const user: DocumentType<User> | null = await findUserByEmail(email)
 
   if (!user) {
-    return res.status(401).send(message)
+    return res.status(403).send(message)
   }
   if (!user.verified) {
     return res.status(403).send("Account is not verified")
   }
   if (!user.validatePassword(password)) {
-    return res.status(401).send(message)
+    return res.status(403).send(message)
   }
   
   const accessToken = signAccessToken(user)
@@ -37,18 +37,18 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
   const refreshToken: string = get(req, "headers.x-refresh") as string
   const decoded = verifyJwt<{session: string}>(refreshToken, "refreshTokenPublicKey")
   if (!decoded) {
-    return res.status(401).send(message)
+    return res.status(403).send(message)
   }
   const session: DocumentType<Session> | null = await findSessionById(decoded.session)
 
   if (!session?.valid) {
-    return res.status(401).send(message)
+    return res.status(403).send(message)
   }
   
   const user = await findUserById(String(session.user))
 
   if (!user) {
-    return res.status(401).send(message)
+    return res.status(403).send(message)
   }
 
   const accessToken = signAccessToken(user)
