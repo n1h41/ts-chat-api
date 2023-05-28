@@ -13,7 +13,7 @@ import { MongoServerError } from "mongodb";
 import WebSocket from "ws";
 
 export class ChatController {
-    private webSocketConnections: Map<String, WebSocketWithUserId> = new Map<String, WebSocketWithUserId>();
+    private webSocketConnections: Map<string, WebSocketWithUserId> = new Map<string, WebSocketWithUserId>();
     private static instance: ChatController;
 
     private constructor(
